@@ -32,20 +32,41 @@ def users():
         html = page.read().decode("utf-8")
         soup = BeautifulSoup(html, "html.parser")
 
-        import openai
+        text = soup.get_text()
+        n = 3000
+        chunks = [text[i:i+n] for i in range(0, len(text), n)]
+        summarized_chunks = []
+        combined_chunks = []
 
-        openai.api_key = "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"
+        while (len(combined_chunks) != 1):
+            for i in range(len(chunks)):
+                curr_chunk = chunks[i]
+                summarized_chunks.append(get_summary(curr_chunk))
 
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt="Please summarize the following text:"+soup.get_text(),
-            temperature=0.7,
-            max_tokens=1000,
-            top_p=1.0,
-            frequency_penalty=0.0,
-            presence_penalty=1
-        )
-        return flask.Response(response=json.dumps(response["choices"][0]["text"].strip()), status=201)
+            combined_chunks = [''.join(x) for x in zip(
+                summarized_chunks[0::2], summarized_chunks[1::2])]
+            if (len(combined_chunks) != 1):
+                chunks = combined_chunks
+                summarized_chunks = []
+
+        return flask.Response(response=json.dumps(get_summary(combined_chunks[0])), status=201)
+
+
+def get_summary(chunk):
+    import openai
+
+    openai.api_key = "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"
+
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt="Please summarize (in less than 300 words) the following text:"+chunk,
+        temperature=0.7,
+        max_tokens=1000,
+        top_p=1.0,
+        frequency_penalty=0.0,
+        presence_penalty=1
+    )
+    return response["choices"][0]["text"].strip()
 
 
 if __name__ == "__main__":
