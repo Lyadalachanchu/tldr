@@ -1,23 +1,84 @@
 <html>
 <header>
     <title>Test page</title>
+    <style>
+        body {
+          min-width: 300px;
+          min-height: 600px;
+          position: relative;
+          vertical-align:middle;
+          font-family: monospace;
+        }
+        #result-container {
+          font-size: 18px;
+        }
+        #answer-container {
+          font-size: 18px;
+        }
+        .button {
+          display: inline-block;
+          border-radius: 4px;
+          background-color: #f4511e;
+          border: none;
+          color: #FFFFFF;
+          text-align: center;
+          font-size: 28px;
+          padding: 20px;
+          width: 200px;
+          transition: all 0.5s;
+          cursor: pointer;
+          margin: 5px;
+        }
+        
+        .button span {
+          cursor: pointer;
+          display: inline-block;
+          position: relative;
+          transition: 0.5s;
+        }
+        
+        .button span:after {
+          content: '\00bb';
+          position: absolute;
+          opacity: 0;
+          top: 0;
+          right: -20px;
+          transition: 0.5s;
+        }
+        
+        .button:hover span {
+          padding-right: 25px;
+        }
+        
+        .button:hover span:after {
+          opacity: 1;
+          right: 0;
+        }
+        hr.solid {
+          border-top: 3px solid #bbb;
+        }
+        #data-input
+        {
+            height:100px;
+            font-size:14pt;
+        }
+        </style>
 </header>
 
 <body>
-    <div>This is simple test to get data from a backend</div>
-    <div><span>Last update: </span><span id="time-container"></span></div>
     <div>
-        <label for="data-input">Data to send:</label>
-        <input type="text" id="data-input">
-        <!-- <button onclick="getUsers()">Send data</button> -->
-        <button id="myButton">Send data</button>
+        <!-- <label for="data-input">Data to send:</label> -->
+        <textarea type="text" id="data-input"></textarea>
+        <button class="button" id="myButton" onclick="getUsers()">TL;DR it</button>
+        <button class="button" id="myButtonAsk" onclick="askQuestion()">Ask Question</button>
+        <!-- <button id="myButton">Send data</button> -->
         <script type="text/javascript" src="xsr.js"></script>
     </div>
-    <div>
-        <div id="sent-data-container"></div>
-    </div>
-    <hr>
-    <button onclick="getUsers()">Get user data</button>
+    <hr class="solid">
+    <h2>Summary</h2>
     <div id="result-container"></div>
+    <hr class="solid">
+    <h2>Answer</h2>
+    <div id="answer-container"></div>
 </body>
 </html>
