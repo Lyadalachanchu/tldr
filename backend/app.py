@@ -7,6 +7,10 @@ from urllib.request import urlopen
 app = Flask(__name__)
 CORS(app)
 
+user_dictionary = {
+
+}
+
 
 @app.route("/")
 def hello():
@@ -19,7 +23,12 @@ def ask_endpoint():
         print("ask endpoint reached")
         recieved_data = request.get_json()
         recieved_question = recieved_data['data']
-        return flask.Response(response=json.dumps(ask(recieved_question)), status=201)
+        id = recieved_data['id']
+        print("id")
+        print(id)
+        if (not id in user_dictionary):
+            user_dictionary[id] = ms
+        return flask.Response(response=json.dumps(ask(recieved_question, id)), status=201)
 
 
 @app.route('/users', methods=["GET", "POST"])
@@ -30,6 +39,10 @@ def users():
         print("users endpoint reached...")
         recieved_data = request.get_json()
         recieved_url = recieved_data['data']
+        id = recieved_data['id']
+        if (not id in user_dictionary):
+            user_dictionary[id] = ms
+        print(recieved_url)
         # with open("users.json", "r") as f:
         #     data = json.load(f)
         #     data.append({
@@ -42,6 +55,7 @@ def users():
         soup = BeautifulSoup(html, "html.parser")
 
         text = soup.get_text()
+        print(recieved_url)
         # n = 3000
         # chunks = [text[i:i+n] for i in range(0, len(text), n)]
         # summarized_chunks = []
@@ -58,7 +72,7 @@ def users():
         #         chunks = combined_chunks
         #         summarized_chunks = []
 
-        return flask.Response(response=json.dumps(get_summary(text)), status=201)
+        return flask.Response(response=json.dumps(get_summary(text, id)), status=201)
 
 
 ms = [
@@ -66,29 +80,32 @@ ms = [
 ]
 
 
-def get_summary(chunk):
+def get_summary(chunk, id):
     import openai
     openai.api_key = "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"
-    import openai
-    ms.append(
+    print(chunk)
+    user_dictionary[id].append(
         {"role": "user", "content": "Please summarize the following text:"+chunk})
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=ms
+        messages=user_dictionary[id]
     )
+    print(response)
     return response["choices"][0]["message"]["content"]
 
 
-def ask(question):
+def ask(question, id):
     import openai
     openai.api_key = "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"
     print(question)
-    ms.append({"role": "user", "content": question})
+
+    user_dictionary[id].append({"role": "user", "content": question})
+
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=ms
+        messages=user_dictionary[id]
     )
-    ms.pop()
+    user_dictionary[id].pop()
     return response["choices"][0]["message"]["content"]
 
 
