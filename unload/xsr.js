@@ -1,5 +1,14 @@
     document.getElementById("myButton").addEventListener("click", getUsers);
     document.getElementById("myButtonAsk").addEventListener("click", askQuestion);
+
+    chrome.storage.session.get(["key"]).then((result) => {
+        func(result)
+      });
+
+    function func(result) {
+        dataDiv = document.getElementById('answer-container');
+        dataDiv.innerHTML = result.key;
+    }
     
     var xhr = null;
 
@@ -27,7 +36,12 @@
             console.log("answer received!");
             dataDiv = document.getElementById('answer-container');
             // Set current data text
-            dataDiv.innerHTML = xhr.responseText;
+            chrome.storage.session.set({ key: xhr.responseText }).then(() => {
+                console.log("Value is set");
+              });
+            //   chrome.storage.session.get(["key"]).then((result) => {
+            //     dataDiv.innerHTML = result.key;
+            //   });
             dataDiv.innerHTML = xhr.responseText;
         }
     }

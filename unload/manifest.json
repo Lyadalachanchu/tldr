@@ -8,5 +8,5 @@
     "default_popup": "index.html",
     "default_title": "Latest Covid Report"
   },
-  "permissions": ["tabs"]
+  "permissions": ["tabs", "storage"]
 }
