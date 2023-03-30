@@ -1,4 +1,4 @@
-    document.getElementById("myButton").addEventListener("click", getUsers);
+    document.getElementById("myButton").addEventListener("click", getSummary);
     document.getElementById("myButtonAsk").addEventListener("click", askQuestion);
 
     chrome.storage.session.get(["key"]).then((result) => {
@@ -42,7 +42,7 @@
     function sendDataCallback() {
         // Check response is ready or not
         if (xhr.readyState == 4 && xhr.status == 201) {
-            console.log("User data received!");
+            console.log("Data received!");
             dataDiv = document.getElementById('result-container');
             // Set current data text
             dataDiv.innerHTML = xhr.responseText;
@@ -64,7 +64,7 @@
             dataDiv.innerHTML = xhr.responseText;
         }
     }
-    function getUsers() {
+    function getSummary() {
         console.log("Get users...");
         dataDiv = document.getElementById('result-container');
         dataDiv.innerHTML = "thinking...";
@@ -74,7 +74,7 @@
             xhr = getXmlHttpRequestObject();
             xhr.onreadystatechange = sendDataCallback;
             // asynchronous requests
-            xhr.open("POST", "http://tldr.pythonanywhere.com/users", true);
+            xhr.open("POST", "http://tldr.pythonanywhere.com/summary", true);
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             // Send the request over the network
             xhr.send(JSON.stringify({"data": dataToSend, "id": user_id}));

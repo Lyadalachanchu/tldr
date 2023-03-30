@@ -10,6 +10,7 @@ CORS(app)
 user_dictionary = {
 
 }
+API_KEY = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 
 @app.route("/")
@@ -31,8 +32,8 @@ def ask_endpoint():
         return flask.Response(response=json.dumps(ask(recieved_question, id)), status=201)
 
 
-@app.route('/users', methods=["GET", "POST"])
-def users():
+@app.route('/summary', methods=["GET", "POST"])
+def summary():
     if (request.method == "GET"):
         return flask.jsonify("blah")
     if request.method == "POST":
@@ -40,6 +41,8 @@ def users():
         recieved_data = request.get_json()
         recieved_url = recieved_data['data']
         id = recieved_data['id']
+        print("id")
+        print(id)
         if (not id in user_dictionary):
             user_dictionary[id] = ms
         print(recieved_url)
@@ -55,7 +58,7 @@ def users():
         soup = BeautifulSoup(html, "html.parser")
 
         text = soup.get_text()
-        print(recieved_url)
+        # print(recieved_url)
         # n = 3000
         # chunks = [text[i:i+n] for i in range(0, len(text), n)]
         # summarized_chunks = []
@@ -82,7 +85,7 @@ ms = [
 
 def get_summary(chunk, id):
     import openai
-    openai.api_key = "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"
+    openai.api_key = API_KEY
     print(chunk)
     user_dictionary[id].append(
         {"role": "user", "content": "Please summarize the following text:"+chunk})
@@ -90,16 +93,18 @@ def get_summary(chunk, id):
         model="gpt-3.5-turbo",
         messages=user_dictionary[id]
     )
-    print(response)
+    print(user_dictionary)
+    # print(response)
     return response["choices"][0]["message"]["content"]
 
 
 def ask(question, id):
     import openai
-    openai.api_key = "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"
+    openai.api_key = API_KEY
     print(question)
 
     user_dictionary[id].append({"role": "user", "content": question})
+    print(user_dictionary)
 
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",

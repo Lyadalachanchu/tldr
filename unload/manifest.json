@@ -1,12 +1,13 @@
 {
-  "name": "Covid-19 Stats UK",
+  "name": "TLDR",
   "version": "1.0.0",
-  "description": "latest covid data of UK",
+  "description": "Summarizes and answers questions about a webpage/article",
+  "icons": {},
   "manifest_version": 3,
-  "author": "Sampurna Chapagain",
+  "author": "Lohithsai Yadala Chanchu",
   "action":{
     "default_popup": "index.html",
-    "default_title": "Latest Covid Report"
+    "default_title": "TLDR"
   },
   "permissions": ["tabs", "storage"]
 }
